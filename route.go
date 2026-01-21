@@ -141,7 +141,7 @@ func ParseRoutes(data string) []Route {
 			continue
 		}
 
-		if matches := regexp.MustCompile(`^([0-9a-f.:\/]+)\s+((?:via\s+([0-9a-f.:]+)\s+on\s+([a-zA-Z0-9_.\-\/]+))|\w+)\s+\[(\w+)\s+([0-9\-\:]+(?:\s[0-9\-\:]+)?)(?:\s+from\s+([0-9a-f.:\/]+))?\](?:\s+(\*))?\s+\((\d+)(?:\/(\-?\d+))?\).*$`).FindStringSubmatch(line); matches != nil {
+		if matches := regexp.MustCompile(`^([0-9a-f.:\/]+)\s+((?:via\s+([0-9a-f.:]+)\s+on\s+([a-zA-Z0-9_.\-\/]+))|\w+)\s+\[(\w+)\s+([0-9]{4}-[0-9]{1,2}-[0-9]{1,2}|[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}(?:\.[0-9]+)?)(?:\s+from\s+([0-9a-f.:\/]+))?\](?:\s+(\*))?\s+\((\d+)(?:\/(\-?\d+))?\).*$`).FindStringSubmatch(line); matches != nil {
 			processCollector()
 			if currentRoute.Network != "" {
 				routes = append(routes, currentRoute)
@@ -149,7 +149,7 @@ func ParseRoutes(data string) []Route {
 			currentRoute = mainRouteDetail(matches)
 			resetCollector()
 			continue
-		} else if matches := regexp.MustCompile(`^\s+((?:via\s+([0-9a-f.:]+)\s+on\s+([a-zA-Z0-9_.\-\/]+))|\w+)\s+\[(\w+)\s+([0-9\-\:]+(?:\s[0-9\-\:]+)?)(?:\s+from\s+([0-9a-f.:\/]+))?\](?:\s+(\*))?\s+\((\d+)(?:\/(\-?\d+))?\).*$`).FindStringSubmatch(line); matches != nil {
+		} else if matches := regexp.MustCompile(`^\s+((?:via\s+([0-9a-f.:]+)\s+on\s+([a-zA-Z0-9_.\-\/]+))|\w+)\s+\[(\w+)\s+([0-9]{4}-[0-9]{1,2}-[0-9]{1,2}|[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}(?:\.[0-9]+)?)(?:\s+from\s+([0-9a-f.:\/]+))?\](?:\s+(\*))?\s+\((\d+)(?:\/(\-?\d+))?\).*$`).FindStringSubmatch(line); matches != nil {
 			processCollector()
 			if currentRoute.Network != "" {
 				routes = append(routes, currentRoute)
