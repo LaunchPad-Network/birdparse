@@ -8,11 +8,19 @@ import (
 
 func ParseBGPProtocol(data string) BgpProtocol {
 	result := BgpProtocol{}
+	seenChannels := make(map[string]bool)
 
 	lines := strings.Split(data, "\n")
 
 	for _, line := range lines {
 		line = strings.TrimRight(line, "\r")
+
+		if strings.Contains(line, "Channel ipv4") {
+			seenChannels["ipv4"] = true
+		}
+		if strings.Contains(line, "Channel ipv6") {
+			seenChannels["ipv6"] = true
+		}
 
 		headerRE := regexp.MustCompile(`^(\S+)\s+BGP\s+([-\w]+|\.{3,}|-+)\s+(\w+)\s+([0-9]{4}-[0-9]{2}-[0-9]{2}|[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}(?:\.[0-9]{1,3})?)\s*(.*)$`)
 
@@ -185,6 +193,11 @@ func ParseBGPProtocol(data string) BgpProtocol {
 		result.RouteLimitAt = result.Routes.Imported
 	}
 
+	if seenChannels["ipv4"] && seenChannels["ipv6"] {
+		// TODO: MP-BGP not supported yet
+		result = BgpProtocol{}
+	}
+
 	return result
 }
 
@@ -234,6 +247,6 @@ func ParseBGPProtocols(data string) []BgpProtocol {
 }
 
 func isBGPHeaderLine(line string) bool {
-	headerRE := regexp.MustCompile(`^(\S+)\s+BGP\s+([-\w]+|\.{3,}|-+)\s+(\w+)\s+([0-9]{4}-[0-9]{2}-[0-9]{2})\s*(.*)$`)
+	headerRE := regexp.MustCompile(`^(\S+)\s+BGP\s+([-\w]+|\.{3,}|-+)\s+(\w+)\s+([0-9]{4}-[0-9]{2}-[0-9]{2}|[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}(?:\.[0-9]{1,3})?)\s*(.*)$`)
 	return headerRE.FindStringSubmatch(line) != nil
 }

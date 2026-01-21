@@ -20,7 +20,7 @@ Table master4:
         BGP.aggregator: 40.15.254.191 AS4249
         BGP.community: (2914,410) (2914,1408) (2914,2401) (2914,3400) (32787,64015) (32787,65522)
         BGP.large_community: (44324, 10000, 52) (44324, 10001, 392) (215172, 0, 100) (215172, 3, 1392) (215172, 3, 52) (215172, 3, 3003) (215172, 5, 2) (215172, 6, 44324)
-                     unicast [us_1234_4 2026-01-19] (100) [AS4249i]
+                     unicast [us_1234_4 12:16:59.123] (100) [AS4249i]
         via 1.2.3.4 on eth1
         Type: BGP univ
         BGP.origin: IGP
@@ -124,7 +124,7 @@ func TestParseIPv6Routes(t *testing.T) {
 	data := `BIRD 2.17.1 ready.
 Access restricted
 Table master6:
-2a0a:2c0:1a::/48     unicast [rr_tyom10 2026-01-17 from 2001:678:11a4::2] * (100/145) [AS210092i]
+2a0a:2c0:1a::/48     unicast [rr_tyom10 23:41:27.768 from 2001:678:11a4::2] * (100/145) [AS210092i]
         via fe80::5efe:a64:bfe on tyom10
         Type: BGP univ
         BGP.origin: IGP
@@ -139,7 +139,7 @@ Table master6:
         BGP.ext_community: (rt, 48648, 3)
         BGP.large_community: (50263, 1910, 437) (50263, 1911, 32) (50263, 1912, 101) (50263, 1913, 804) (50263, 1914, 150) (50263, 1915, 1) (215172, 0, 200) (215172, 3, 52) 
 (215172, 3, 1085) (215172, 3, 3012) (215172, 5, 1) (215172, 5, 5) (215172, 6, 47498) (215172, 7, 3756)
-                     unicast [us_44324_6 2026-01-15] (100) [AS210092i]
+                     unicast [us_44324_6 23:41:27.768] (100) [AS210092i]
         via fc00:230::1 on eth0
         Type: BGP univ
         BGP.origin: IGP

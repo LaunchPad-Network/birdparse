@@ -46,7 +46,7 @@ rpki_launchpad RPKI       ---        up     2026-01-16    Established
       Export updates:              0          0          0        ---          0
       Export withdraws:            0        ---        ---        ---          0
 
-AS213605_13_V6 BGP        ---        up     2026-01-12    Established   
+AS213605_13_V6 BGP        ---        up     23:41:27.768    Established   
   BGP state:          Established
     Neighbor address: 2602:f92a:1315::e
     Neighbor AS:      213605
