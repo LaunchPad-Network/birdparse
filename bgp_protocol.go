@@ -14,7 +14,7 @@ func ParseBGPProtocol(data string) BgpProtocol {
 	for _, line := range lines {
 		line = strings.TrimRight(line, "\r")
 
-		headerRE := regexp.MustCompile(`^(\S+)\s+BGP\s+([-\w]+|\.{3,}|-+)\s+(\w+)\s+([0-9]{4}-[0-9]{2}-[0-9]{2})\s*(.*)$`)
+		headerRE := regexp.MustCompile(`^(\S+)\s+BGP\s+([-\w]+|\.{3,}|-+)\s+(\w+)\s+([0-9]{4}-[0-9]{2}-[0-9]{2}|[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}(?:\.[0-9]{1,3})?)\s*(.*)$`)
 
 		if m := headerRE.FindStringSubmatch(line); m != nil {
 			result.Protocol = m[1]
