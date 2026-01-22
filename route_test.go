@@ -45,7 +45,7 @@ Table master4:
 			BGP: &RouteBGPInfo{
 				Origin:     "IGP",
 				ASPath:     []int{44324, 216211, 30058, 2914, 32787, 4249},
-				NextHop:    "10.151.104.1",
+				NextHop:    []string{"10.151.104.1"},
 				LocalPref:  100,
 				AtomicAggr: "",
 				Aggregator: "40.15.254.191 AS4249",
@@ -81,7 +81,7 @@ Table master4:
 			BGP: &RouteBGPInfo{
 				Origin:     "IGP",
 				ASPath:     []int{1234, 4249},
-				NextHop:    "1.2.3.4",
+				NextHop:    []string{"1.2.3.4"},
 				LocalPref:  100,
 				AtomicAggr: "",
 				Aggregator: "40.15.254.191 AS4249",
@@ -172,7 +172,7 @@ Table master6:
 			BGP: &RouteBGPInfo{
 				Origin:    "IGP",
 				ASPath:    []int{50263, 48648, 210092},
-				NextHop:   "2001:678:11a4::12",
+				NextHop:   []string{"2001:678:11a4::12"},
 				LocalPref: 205,
 				Communities: [][]int{
 					{0, 3255}, {0, 3326}, {0, 6768}, {0, 8647}, {0, 12883},
@@ -215,7 +215,7 @@ Table master6:
 			BGP: &RouteBGPInfo{
 				Origin:    "IGP",
 				ASPath:    []int{44324, 216211, 6939, 35297, 48648, 210092},
-				NextHop:   "fc00:230::1",
+				NextHop:   []string{"fc00:230::1", "fe80::fcb2:c6ff:fe2a:691"},
 				LocalPref: 100,
 				Communities: [][]int{
 					{23640, 65012},
@@ -249,7 +249,7 @@ Table master6:
 			BGP: &RouteBGPInfo{
 				Origin:    "IGP",
 				ASPath:    []int{44324, 216211, 3491, 3491, 6453, 7545},
-				NextHop:   "fc00:230::1",
+				NextHop:   []string{"fc00:230::1", "fe80::fcb2:c6ff:fe2a:691"},
 				LocalPref: 100,
 				Communities: [][]int{
 					{3491, 4000},
@@ -266,6 +266,46 @@ Table master6:
 					{215172, 5, 2},
 					{215172, 6, 44324},
 				},
+			},
+		},
+	}
+
+	result := ParseRoutes(data)
+
+	if len(result) != len(expected) {
+		t.Fatalf("Expected %d routes, got %d", len(expected), len(result))
+	}
+
+	for i, route := range result {
+		if !reflect.DeepEqual(route, expected[i]) {
+			t.Errorf("Route %d mismatch:\nGot: %+v\nExpected: %+v", i, route, expected[i])
+		}
+	}
+}
+
+func TestParseOSPFRoute(t *testing.T) {
+	data := `BIRD 2.17.1 ready.
+Access restricted
+Table master6:
+2001:678:11a4::4/128 unicast [lpnet_ospf 10:56:39.545] * I (150/10) [82.39.145.1]
+        via fe80::200:5efe:1797:6804 on tyoe20
+        Type: OSPF univ
+        OSPF.metric1: 10
+        OSPF.router_id: 82.39.145.1`
+
+	expected := []Route{
+		{
+			Network:      "2001:678:11a4::4/128",
+			Gateway:      "fe80::200:5efe:1797:6804",
+			Interface:    "tyoe20",
+			FromProtocol: "lpnet_ospf",
+			Primary:      true,
+			Metric:       150,
+			IGPMetric:    10,
+			Type:         []string{"OSPF", "univ"},
+			OSPF: &RouteOSPFInfo{
+				Metric1:  10,
+				RouterID: "82.39.145.1",
 			},
 		},
 	}

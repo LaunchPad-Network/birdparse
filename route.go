@@ -21,6 +21,8 @@ const (
 	collectorBGPAggregator
 	collectorBGPCommunity
 	collectorBGPLargeCommunity
+	collectorOSPFMetric1
+	collectorOSPFRouterID
 )
 
 func ParseRoutes(data string) []Route {
@@ -86,11 +88,11 @@ func ParseRoutes(data string) []Route {
 				currentRoute.BGP.ASPath, _ = parseASPath(strings.TrimSpace(matches[1]))
 			}
 		case collectorBGPNextHop:
-			if matches := regexp.MustCompile(`^BGP\.next_hop:\s+([0-9a-f\.\:]+)(?:\s+[^\s]+)*$`).FindStringSubmatch(fullLine); matches != nil {
+			if matches := regexp.MustCompile(`^BGP\.next_hop:\s+((?:[0-9a-f\.:]+\s*)+)$`).FindStringSubmatch(fullLine); matches != nil {
 				if currentRoute.BGP == nil {
 					currentRoute.BGP = &RouteBGPInfo{}
 				}
-				currentRoute.BGP.NextHop = matches[1]
+				currentRoute.BGP.NextHop = strings.Fields(matches[1])
 			}
 		case collectorBGPLocalPref:
 			if matches := regexp.MustCompile(`^BGP\.local_pref:\s+(\w+)$`).FindStringSubmatch(fullLine); matches != nil {
@@ -126,6 +128,20 @@ func ParseRoutes(data string) []Route {
 					currentRoute.BGP = &RouteBGPInfo{}
 				}
 				currentRoute.BGP.Origin = matches[1]
+			}
+		case collectorOSPFMetric1:
+			if matches := regexp.MustCompile(`^OSPF\.metric1:\s+(\d+)$`).FindStringSubmatch(fullLine); matches != nil {
+				if currentRoute.OSPF == nil {
+					currentRoute.OSPF = &RouteOSPFInfo{}
+				}
+				currentRoute.OSPF.Metric1 = atoi(matches[1])
+			}
+		case collectorOSPFRouterID:
+			if matches := regexp.MustCompile(`^OSPF\.router_id:(.*)$`).FindStringSubmatch(fullLine); matches != nil {
+				if currentRoute.OSPF == nil {
+					currentRoute.OSPF = &RouteOSPFInfo{}
+				}
+				currentRoute.OSPF.RouterID = strings.TrimSpace(matches[1])
 			}
 		}
 
@@ -190,6 +206,10 @@ func ParseRoutes(data string) []Route {
 			detectedCollector = collectorBGPAggregator
 		case strings.HasPrefix(trimmedLine, "BGP.origin:"):
 			detectedCollector = collectorBGPPrefix
+		case strings.HasPrefix(trimmedLine, "OSPF.metric1:"):
+			detectedCollector = collectorOSPFMetric1
+		case strings.HasPrefix(trimmedLine, "OSPF.router_id:"):
+			detectedCollector = collectorOSPFRouterID
 		default:
 			if currentCollector != collectorNone && trimmedLine != "" {
 				collectorLines = append(collectorLines, line)
