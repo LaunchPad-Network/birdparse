@@ -59,7 +59,7 @@ func ParseBGPProtocol(data string) BgpProtocol {
 		}
 
 		if m := regexp.MustCompile(`^\s+Import limit:\s+(\d+)$`).FindStringSubmatch(line); m != nil {
-			result.ImportLimit, _ = strconv.Atoi(m[1])
+			result.ImportLimit = m[1]
 			continue
 		}
 
@@ -70,17 +70,17 @@ func ParseBGPProtocol(data string) BgpProtocol {
 
 		if m := regexp.MustCompile(`^\s+Routes:\s+(\d+)\s+imported,\s+(\d+)\s+exported`).FindStringSubmatch(line); m != nil {
 			result.Routes = &BgpProtocolBgpRoutes{
-				Imported: atoi(m[1]),
-				Exported: atoi(m[2]),
+				Imported: m[1],
+				Exported: m[2],
 			}
 			continue
 		}
 		if m := regexp.MustCompile(`^\s+Routes:\s+(\d+)\s+imported,\s+(\d+)\s+filtered,\s+(\d+)\s+exported,\s+(\d+)\s+preferred`).FindStringSubmatch(line); m != nil {
 			result.Routes = &BgpProtocolBgpRoutes{
-				Imported:  atoi(m[1]),
-				Filtered:  atoi(m[2]),
-				Exported:  atoi(m[3]),
-				Preferred: atoi(m[4]),
+				Imported:  m[1],
+				Filtered:  m[2],
+				Exported:  m[3],
+				Preferred: m[4],
 			}
 			continue
 		}
@@ -116,7 +116,7 @@ func ParseBGPProtocol(data string) BgpProtocol {
 		}
 
 		if m := regexp.MustCompile(`^\s+Route limit:\s+(\d+)/(\d+)$`).FindStringSubmatch(line); m != nil {
-			result.RouteLimitAt = atoi(m[1])
+			result.RouteLimitAt = m[1]
 			continue
 		}
 
@@ -137,11 +137,11 @@ func ParseBGPProtocol(data string) BgpProtocol {
 				result.RouteChanges = &BgpProtocolRouteChanges{}
 			}
 			result.RouteChanges.ImportUpdates = &BgpProtocolRouteChangeDetail{
-				Received: parseOptionalInt(m[1]),
-				Rejected: parseOptionalInt(m[2]),
-				Filtered: parseOptionalInt(m[3]),
-				Ignored:  parseOptionalInt(m[4]),
-				Accepted: parseOptionalInt(m[5]),
+				Received: parseOptionalIntAsString(m[1]),
+				Rejected: parseOptionalIntAsString(m[2]),
+				Filtered: parseOptionalIntAsString(m[3]),
+				Ignored:  parseOptionalIntAsString(m[4]),
+				Accepted: parseOptionalIntAsString(m[5]),
 			}
 			continue
 		}
@@ -151,11 +151,11 @@ func ParseBGPProtocol(data string) BgpProtocol {
 				result.RouteChanges = &BgpProtocolRouteChanges{}
 			}
 			result.RouteChanges.ImportWithdraws = &BgpProtocolRouteChangeDetail{
-				Received: parseOptionalInt(m[1]),
-				Rejected: parseOptionalInt(m[2]),
-				Filtered: parseOptionalInt(m[3]),
-				Ignored:  parseOptionalInt(m[4]),
-				Accepted: parseOptionalInt(m[5]),
+				Received: parseOptionalIntAsString(m[1]),
+				Rejected: parseOptionalIntAsString(m[2]),
+				Filtered: parseOptionalIntAsString(m[3]),
+				Ignored:  parseOptionalIntAsString(m[4]),
+				Accepted: parseOptionalIntAsString(m[5]),
 			}
 			continue
 		}
@@ -165,11 +165,11 @@ func ParseBGPProtocol(data string) BgpProtocol {
 				result.RouteChanges = &BgpProtocolRouteChanges{}
 			}
 			result.RouteChanges.ExportUpdates = &BgpProtocolRouteChangeDetail{
-				Received: parseOptionalInt(m[1]),
-				Rejected: parseOptionalInt(m[2]),
-				Filtered: parseOptionalInt(m[3]),
-				Ignored:  parseOptionalInt(m[4]),
-				Accepted: parseOptionalInt(m[5]),
+				Received: parseOptionalIntAsString(m[1]),
+				Rejected: parseOptionalIntAsString(m[2]),
+				Filtered: parseOptionalIntAsString(m[3]),
+				Ignored:  parseOptionalIntAsString(m[4]),
+				Accepted: parseOptionalIntAsString(m[5]),
 			}
 			continue
 		}
@@ -179,17 +179,17 @@ func ParseBGPProtocol(data string) BgpProtocol {
 				result.RouteChanges = &BgpProtocolRouteChanges{}
 			}
 			result.RouteChanges.ExportWithdraws = &BgpProtocolRouteChangeDetail{
-				Received: parseOptionalInt(m[1]),
-				Rejected: parseOptionalInt(m[2]),
-				Filtered: parseOptionalInt(m[3]),
-				Ignored:  parseOptionalInt(m[4]),
-				Accepted: parseOptionalInt(m[5]),
+				Received: parseOptionalIntAsString(m[1]),
+				Rejected: parseOptionalIntAsString(m[2]),
+				Filtered: parseOptionalIntAsString(m[3]),
+				Ignored:  parseOptionalIntAsString(m[4]),
+				Accepted: parseOptionalIntAsString(m[5]),
 			}
 			continue
 		}
 	}
 
-	if result.RouteLimitAt == 0 && result.Routes != nil {
+	if result.RouteLimitAt == "" && result.Routes != nil {
 		result.RouteLimitAt = result.Routes.Imported
 	}
 

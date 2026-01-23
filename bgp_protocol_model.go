@@ -1,18 +1,18 @@
 package birdparse
 
 type BgpProtocolBgpRoutes struct {
-	Imported  int `json:"imported"`
-	Filtered  int `json:"filtered"`
-	Exported  int `json:"exported"`
-	Preferred int `json:"preferred"`
+	Imported  string `json:"imported"`
+	Filtered  string `json:"filtered"`
+	Exported  string `json:"exported"`
+	Preferred string `json:"preferred"`
 }
 
 type BgpProtocolRouteChangeDetail struct {
-	Received int `json:"received"`
-	Rejected int `json:"rejected"`
-	Filtered int `json:"filtered"`
-	Ignored  int `json:"ignored"`
-	Accepted int `json:"accepted"`
+	Received string `json:"received"`
+	Rejected string `json:"rejected"`
+	Filtered string `json:"filtered"`
+	Ignored  string `json:"ignored"`
+	Accepted string `json:"accepted"`
 }
 
 type BgpProtocolRouteChanges struct {
@@ -32,7 +32,7 @@ type BgpProtocol struct {
 	Preference       int                      `json:"preference"`
 	InputFilter      string                   `json:"input_filter"`
 	OutputFilter     string                   `json:"output_filter"`
-	ImportLimit      int                      `json:"import_limit"`
+	ImportLimit      string                   `json:"import_limit"`
 	LimitAction      string                   `json:"limit_action"`
 	Routes           *BgpProtocolBgpRoutes    `json:"routes"`
 	RouteChanges     *BgpProtocolRouteChanges `json:"route_changes"`
@@ -42,7 +42,7 @@ type BgpProtocol struct {
 	NeighborID       string                   `json:"neighbor_id"`
 	BgpSession       []string                 `json:"bgp_session"`
 	SourceAddress    string                   `json:"source_address"`
-	RouteLimitAt     int                      `json:"route_limit_at"`
+	RouteLimitAt     string                   `json:"route_limit_at"`
 	HoldTimer        int                      `json:"hold_timer"`
 	HoldTimerNow     int                      `json:"hold_timer_now"`
 	Keepalive        int                      `json:"keepalive"`

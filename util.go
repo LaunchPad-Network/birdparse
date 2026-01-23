@@ -6,11 +6,11 @@ import (
 	"strings"
 )
 
-func parseOptionalInt(s string) int {
+func parseOptionalIntAsString(s string) string {
 	if strings.Contains(s, "-") && !regexp.MustCompile(`^\d+$`).MatchString(s) {
-		return 0
+		return "0"
 	}
-	return atoi(s)
+	return strconv.Itoa(atoi(s))
 }
 
 func atoi(s string) int {
