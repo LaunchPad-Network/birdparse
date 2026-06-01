@@ -211,7 +211,7 @@ func ParseRoutes(data string) []Route {
 		case strings.HasPrefix(trimmedLine, "OSPF.router_id:"):
 			detectedCollector = collectorOSPFRouterID
 		default:
-			if currentCollector != collectorNone && trimmedLine != "" {
+			if currentCollector != collectorNone && trimmedLine != "" && !strings.Contains(trimmedLine, ":") {
 				collectorLines = append(collectorLines, line)
 				continue
 			}

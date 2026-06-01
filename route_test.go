@@ -322,3 +322,49 @@ Table master6:
 		}
 	}
 }
+
+func TestParseIBGPRoute(t *testing.T) {
+	data := `BIRD 2.18 ready.
+Access restricted
+Table master6:
+2a14:7583:f706::/48  unicast [rr_jp 2026-05-27 from 2a14:7583:f700::4] * (100/30) [i]
+        via fe80::c807:351e:defa:43c3 on wg-homelab-sha onlink
+        Type: BGP univ
+        BGP.origin: IGP
+        BGP.as_path:
+        BGP.next_hop: 2a14:7583:f700::6
+        BGP.local_pref: 1005
+        BGP.originator_id: 100.103.65.123
+        BGP.cluster_list: 0.0.0.1`
+
+	expected := []Route{
+		{
+			Network:      "2a14:7583:f706::/48",
+			Gateway:      "fe80::c807:351e:defa:43c3",
+			Interface:    "wg-homelab-sha",
+			FromProtocol: "rr_jp",
+			FromAddress:  "2a14:7583:f700::4",
+			Primary:      true,
+			Metric:       100,
+			IGPMetric:    30,
+			Type:         []string{"BGP", "univ"},
+			BGP: &RouteBGPInfo{
+				Origin:    "IGP",
+				NextHop:   []string{"2a14:7583:f700::6"},
+				LocalPref: 1005,
+			},
+		},
+	}
+
+	result := ParseRoutes(data)
+
+	if len(result) != len(expected) {
+		t.Fatalf("Expected %d routes, got %d", len(expected), len(result))
+	}
+
+	for i, route := range result {
+		if !reflect.DeepEqual(route, expected[i]) {
+			t.Errorf("Route %d mismatch:\nGot: %+v\nExpected: %+v", i, route, expected[i])
+		}
+	}
+}
